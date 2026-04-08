@@ -49,8 +49,8 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">Manage your TextFlow account preferences and integration.</p>
+        <h1 className="text-3xl font-bold text-white">Settings</h1>
+        <p className="text-gray-300 mt-2">Manage your TextFlow account preferences and integration.</p>
       </div>
 
       {saveSuccess && (
@@ -59,12 +59,12 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Account Information</h2>
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6 mb-6">
+        <h2 className="text-xl font-semibold text-white mb-6">Account Information</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="companyName" className="block text-sm font-medium text-gray-200 mb-1">
               Company Name
             </label>
             <input
@@ -73,13 +73,13 @@ export default function SettingsPage() {
               name="companyName"
               value={formData.companyName}
               onChange={handleChange}
-              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full max-w-md px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Your company name"
             />
           </div>
 
           <div>
-            <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="timezone" className="block text-sm font-medium text-gray-200 mb-1">
               Timezone
             </label>
             <select
@@ -87,7 +87,7 @@ export default function SettingsPage() {
               name="timezone"
               value={formData.timezone}
               onChange={handleChange}
-              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full max-w-md px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="America/New_York">Eastern Time (ET)</option>
               <option value="America/Chicago">Central Time (CT)</option>
@@ -100,14 +100,14 @@ export default function SettingsPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Notifications</h2>
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6 mb-6">
+        <h2 className="text-xl font-semibold text-white mb-6">Notifications</h2>
         
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-gray-900">Email Notifications</div>
-              <p className="text-sm text-gray-600">Receive email updates about your account and campaigns</p>
+              <div className="font-medium text-white">Email Notifications</div>
+              <p className="text-sm text-gray-300">Receive email updates about your account and campaigns</p>
             </div>
             <div className="flex items-center">
               <input
@@ -123,8 +123,8 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-gray-900">Push Notifications</div>
-              <p className="text-sm text-gray-600">Get browser notifications for urgent support responses</p>
+              <div className="font-medium text-white">Push Notifications</div>
+              <p className="text-sm text-gray-300">Get browser notifications for urgent support responses</p>
             </div>
             <div className="flex items-center">
               <input
@@ -140,20 +140,20 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Integrations</h2>
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6">
+        <h2 className="text-xl font-semibold text-white mb-6">Integrations</h2>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border-white/30 rounded-lg">
             <div className="flex items-center">
-              <div className="bg-blue-100 p-3 rounded-lg mr-4">
+              <div className="bg-blue-500/20 p-3 rounded-lg mr-4">
                 <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M10 9.333l5.333 2.662-5.333 2.672V9.333zm14-4v14a4 4 0 01-4 4H4a4 4 0 01-4-4v-14a4 4 0 014-4h16a4 4 0 014 4z"/>
                 </svg>
               </div>
               <div>
-                <div className="font-medium text-gray-900">Google Calendar</div>
-                <p className="text-sm text-gray-600">Sync your appointments and availability</p>
+                <div className="font-medium text-white">Google Calendar</div>
+                <p className="text-sm text-gray-300">Sync your appointments and availability</p>
               </div>
             </div>
             <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
@@ -161,7 +161,7 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border-white/30 rounded-lg">
             <div className="flex items-center">
               <div className="bg-green-100 p-3 rounded-lg mr-4">
                 <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
@@ -169,8 +169,8 @@ export default function SettingsPage() {
                 </svg>
               </div>
               <div>
-                <div className="font-medium text-gray-900">Stripe</div>
-                <p className="text-sm text-gray-600">Manage billing and payments</p>
+                <div className="font-medium text-white">Stripe</div>
+                <p className="text-sm text-gray-300">Manage billing and payments</p>
               </div>
             </div>
             <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">

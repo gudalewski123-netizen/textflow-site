@@ -66,7 +66,7 @@ export default function SupportPage() {
 
   if (submitted) {
     return (
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
+      <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
             <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,12 +74,12 @@ export default function SupportPage() {
             </svg>
           </div>
           <h2 className="mt-6 text-2xl font-bold text-white">Ticket Submitted</h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/80">
             We've received your support request. Our team will respond within 24 hours at your registered email.
           </p>
           <button
             onClick={() => setSubmitted(false)}
-            className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
+            className="mt-6 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:bg-blue-700"
           >
             Submit Another Ticket
           </button>
@@ -91,13 +91,13 @@ export default function SupportPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Contact Support</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-3xl font-bold text-white">Contact Support</h1>
+        <p className="text-white/80 mt-2">
           Having issues with TextFlow? Submit a ticket and our team will help you resolve it.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -116,7 +116,7 @@ export default function SupportPage() {
               required
               value={formData.subject}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
               placeholder="Brief description of your issue"
             />
           </div>
@@ -131,7 +131,7 @@ export default function SupportPage() {
               required
               value={formData.issueType}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
             >
               <option value="">Select an issue type</option>
               {ISSUE_TYPES.map((type) => (
@@ -153,7 +153,7 @@ export default function SupportPage() {
               rows={6}
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
               placeholder="Please provide detailed information about your issue, including any error messages or steps to reproduce."
             />
           </div>
@@ -162,7 +162,7 @@ export default function SupportPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Submitting..." : "Submit Support Ticket"}
             </button>
@@ -174,17 +174,17 @@ export default function SupportPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl border p-5">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
           <div className="text-blue-600 font-medium mb-2">Email Support</div>
-          <p className="text-sm text-gray-600">support@textflow.tech</p>
+          <p className="text-sm text-white/80">support@textflow.tech</p>
         </div>
-        <div className="bg-white rounded-xl border p-5">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
           <div className="text-blue-600 font-medium mb-2">Phone</div>
-          <p className="text-sm text-gray-600">+1 (800) 555-0123 (9 AM - 5 PM EST)</p>
+          <p className="text-sm text-white/80">+1 (800) 555-0123 (9 AM - 5 PM EST)</p>
         </div>
-        <div className="bg-white rounded-xl border p-5">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
           <div className="text-blue-600 font-medium mb-2">Documentation</div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white/80">
             <a href="/docs" className="text-blue-600 hover:underline">
               Browse help articles →
             </a>
