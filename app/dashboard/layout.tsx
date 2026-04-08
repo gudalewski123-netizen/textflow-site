@@ -16,12 +16,12 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-
-  if (!data.user) {
-    redirect("/login");
-  }
+  // Auth temporarily disabled for initial deployment
+  // const supabase = await createClient();
+  // const { data } = await supabase.auth.getUser();
+  // if (!data.user) {
+  //   redirect("/login");
+  // }
 
   return (
     <html lang="en">
@@ -46,7 +46,7 @@ export default async function DashboardLayout({
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-blue-100">{data.user.email}</span>
+              <span className="text-sm text-blue-100">demo@textflow.tech</span>
               <form action="/auth/signout" method="post">
                 <button className="text-sm text-blue-200 hover:text-white transition-colors">
                   Sign out
