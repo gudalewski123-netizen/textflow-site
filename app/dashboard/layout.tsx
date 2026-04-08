@@ -25,30 +25,30 @@ export default async function DashboardLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gradient-to-r from-blue-900 via-blue-800 to-black text-white`}>
-        <nav className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-4 shadow-lg border-b border-blue-500">
+      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white`}>
+        <nav className="bg-black/80 backdrop-blur-lg border-b border-cyan-500/30 text-white px-6 py-4 shadow-2xl shadow-cyan-500/10">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-bold text-white">TextFlow</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">TextFlow</h1>
               <div className="flex space-x-6">
-                <a href="/dashboard" className="text-blue-100 hover:text-white font-medium transition-colors">
+                <a href="/dashboard" className="text-gray-300 hover:text-cyan-400 font-medium transition-colors">
                   Overview
                 </a>
-                <a href="/dashboard/calendar" className="text-blue-100 hover:text-white font-medium transition-colors">
+                <a href="/dashboard/calendar" className="text-gray-300 hover:text-cyan-400 font-medium transition-colors">
                   Calendar
                 </a>
-                <a href="/dashboard/support" className="text-blue-100 hover:text-white font-medium transition-colors">
+                <a href="/dashboard/support" className="text-gray-300 hover:text-cyan-400 font-medium transition-colors">
                   Support
                 </a>
-                <a href="/dashboard/settings" className="text-blue-100 hover:text-white font-medium transition-colors">
+                <a href="/dashboard/settings" className="text-gray-300 hover:text-cyan-400 font-medium transition-colors">
                   Settings
                 </a>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-blue-100">{data.user.email}</span>
+              <span className="text-sm text-cyan-400">{data.user.email}</span>
               <form action="/auth/signout" method="post">
-                <button className="text-sm text-blue-200 hover:text-white transition-colors">
+                <button className="text-sm text-gray-400 hover:text-cyan-400 transition-colors">
                   Sign out
                 </button>
               </form>
