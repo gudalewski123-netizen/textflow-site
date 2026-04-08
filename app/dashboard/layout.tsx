@@ -25,7 +25,7 @@ export default async function DashboardLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-900 to-black text-white`}>
+      <body className={`${inter.className}`}>
         <nav className="bg-white/10 backdrop-blur-lg border-b border-white/20 text-white px-6 py-4 shadow-2xl">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center space-x-8">
