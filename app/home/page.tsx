@@ -2,7 +2,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white p-8">
       <header className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">TextFlow Dashboard</h1>
+        <h1 className="text-4xl font-bold mb-4">Textflow</h1>
         <p className="text-xl text-gray-300 mb-8">
           A powerful dashboard for managing your calendar, tasks, and productivity workflow
         </p>
@@ -38,7 +38,7 @@ export default function HomePage() {
       </main>
       
       <footer className="max-w-4xl mx-auto mt-12 pt-6 border-t border-gray-800 text-center text-gray-400">
-        <p>© 2026 TextFlow Dashboard. All rights reserved.</p>
+        <p>© 2026 Textflow. All rights reserved.</p>
         <p className="mt-2">
           <a href="/privacy" className="text-blue-400 hover:text-blue-300 underline">
             Privacy Policy
