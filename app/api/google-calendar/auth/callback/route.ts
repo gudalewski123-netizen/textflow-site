@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     const { error: dbError } = await supabase
       .from('google_calendar_tokens')
       .upsert({
-        id: user.id,
+        user_id: user.id,
         tokens: tokens,
         updated_at: new Date().toISOString()
       });
