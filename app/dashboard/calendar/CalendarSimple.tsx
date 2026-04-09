@@ -41,7 +41,13 @@ export default function CalendarSimple() {
     const loadGoogleAPI = () => {
       const script = document.createElement('script');
       script.src = 'https://apis.google.com/js/api.js';
-      script.onload = initGoogleAPI;
+      script.onload = () => {
+        console.log('Google API script loaded successfully');
+        initGoogleAPI();
+      };
+      script.onerror = (error) => {
+        console.error('Failed to load Google API script:', error);
+      };
       document.body.appendChild(script);
     };
     
@@ -86,6 +92,9 @@ export default function CalendarSimple() {
   
   const handleConnect = async () => {
     console.log('Connect button clicked');
+    console.log('Full window.gapi object:', (window as any).gapi);
+    console.log('Window object keys:', Object.keys(window).filter(k => k.includes('gapi')));
+    
     try {
       console.log('Checking if gapi exists:', !!(window as any).gapi);
       console.log('Checking if auth2 exists:', !!(window as any).gapi?.auth2);
