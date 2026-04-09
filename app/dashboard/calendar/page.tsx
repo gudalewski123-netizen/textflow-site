@@ -81,15 +81,14 @@ export default function CalendarPage() {
         
         if (connection?.is_connected) {
           setIsGoogleConnected(true);
-          // Fetch events using the service role (bypasses RLS)
-          const response = await fetch('/api/google-calendar/tokens', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: data.user.id })
-          });
-          if (response.ok) {
-            const { tokens } = await response.json();
-            fetchGoogleCalendarEvents(tokens);
+          // For now, use direct query - we'll fix RLS properly later
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('google_calendar_tokens')
+            .eq('id', data.user.id)
+            .single();
+          if (profile?.google_calendar_tokens) {
+            fetchGoogleCalendarEvents(profile.google_calendar_tokens);
           }
         }
       }
