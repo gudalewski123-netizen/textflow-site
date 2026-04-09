@@ -109,9 +109,9 @@ export default function CalendarSimple() {
       console.log('Sign-in successful');
       setIsConnected(true);
       fetchEvents();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign-in error:', error);
-      alert('Failed to connect to Google Calendar: ' + error.message);
+      alert('Failed to connect to Google Calendar: ' + (error.message || 'Unknown error'));
     }
   };
   
