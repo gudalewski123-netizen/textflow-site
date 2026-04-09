@@ -58,10 +58,20 @@ export default function CalendarSimple() {
           console.log('Client ID present:', !!process.env.GOOGLE_CLIENT_ID);
           console.log('Full gapi object:', (window as any).gapi);
           
-          // Check if already signed in
-          const authInstance = (window as any).gapi.auth2.getAuthInstance();
-          console.log('Auth instance created:', authInstance);
-          setIsConnected(authInstance.isSignedIn.get());
+          // Wait for auth2 to be fully ready
+          setTimeout(() => {
+            try {
+              const authInstance = (window as any).gapi.auth2.getAuthInstance();
+              console.log('Auth instance created:', authInstance);
+              if (authInstance) {
+                setIsConnected(authInstance.isSignedIn.get());
+              } else {
+                console.warn('Auth instance is null - waiting for initialization');
+              }
+            } catch (error) {
+              console.error('Error getting auth instance:', error);
+            }
+          }, 1000);
         }).catch((error: any) => {
           console.error('Google API init error:', error);
           console.error('Error details:', JSON.stringify(error, null, 2));
@@ -80,7 +90,19 @@ export default function CalendarSimple() {
       console.log('Checking if gapi exists:', !!(window as any).gapi);
       console.log('Checking if auth2 exists:', !!(window as any).gapi?.auth2);
       
-      const authInstance = (window as any).gapi.auth2.getAuthInstance();
+      // Get auth instance with retry logic
+      let authInstance = (window as any).gapi.auth2.getAuthInstance();
+      if (!authInstance) {
+        console.log('Auth instance is null, waiting and retrying...');
+        // Wait and retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        authInstance = (window as any).gapi.auth2.getAuthInstance();
+      }
+      
+      if (!authInstance) {
+        throw new Error('Google Auth instance not available. Try refreshing the page.');
+      }
+      
       console.log('Auth instance:', authInstance);
       
       await authInstance.signIn();
@@ -89,7 +111,7 @@ export default function CalendarSimple() {
       fetchEvents();
     } catch (error) {
       console.error('Sign-in error:', error);
-      alert('Failed to connect to Google Calendar. Check console for details.');
+      alert('Failed to connect to Google Calendar: ' + error.message);
     }
   };
   
