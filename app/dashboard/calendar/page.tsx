@@ -1,5 +1,5 @@
-import CalendarSimple from './CalendarSimple';
+import CalendarGIS from './CalendarGIS';
 
 export default function CalendarPage() {
-  return <CalendarSimple />;
+  return <CalendarGIS />;
 }
