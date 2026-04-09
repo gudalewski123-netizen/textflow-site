@@ -81,6 +81,11 @@ export default function CalendarSimple() {
         }).catch((error: any) => {
           console.error('Google API init error:', error);
           console.error('Error details:', JSON.stringify(error, null, 2));
+          console.error('Environment vars on error:', {
+            apiKey: !!process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+            clientId: !!process.env.GOOGLE_CLIENT_ID,
+            clientIdValue: process.env.GOOGLE_CLIENT_ID
+          });
         });
       });
     };
@@ -119,8 +124,10 @@ export default function CalendarSimple() {
       setIsConnected(true);
       fetchEvents();
     } catch (error: any) {
-      console.error('Sign-in error:', error);
-      alert('Failed to connect to Google Calendar: ' + (error.message || 'Unknown error'));
+      console.error('Sign-in error details:', error);
+      console.error('Error stack:', error.stack);
+      console.error('Full error object:', JSON.stringify(error, null, 2));
+      alert('Google Calendar connection failed. Check console for details.');
     }
   };
   
