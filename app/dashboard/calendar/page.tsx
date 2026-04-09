@@ -73,16 +73,24 @@ export default function CalendarPage() {
     const checkConnection = async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('google_calendar_tokens')
-          .eq('id', data.user.id)
+        const { data: connection } = await supabase
+          .from('calendar_connection_status')
+          .select('is_connected')
+          .eq('user_id', data.user.id)
           .single();
         
-        if (profile?.google_calendar_tokens) {
+        if (connection?.is_connected) {
           setIsGoogleConnected(true);
-          // Fetch calendar events if connected
-          fetchGoogleCalendarEvents(profile.google_calendar_tokens);
+          // Fetch events using the service role (bypasses RLS)
+          const response = await fetch('/api/google-calendar/tokens', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: data.user.id })
+          });
+          if (response.ok) {
+            const { tokens } = await response.json();
+            fetchGoogleCalendarEvents(tokens);
+          }
         }
       }
     };
