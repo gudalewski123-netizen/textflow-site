@@ -56,12 +56,15 @@ export default function CalendarSimple() {
           console.log('Google API initialized successfully');
           console.log('API Key present:', !!process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
           console.log('Client ID present:', !!process.env.GOOGLE_CLIENT_ID);
+          console.log('Full gapi object:', (window as any).gapi);
           
           // Check if already signed in
           const authInstance = (window as any).gapi.auth2.getAuthInstance();
+          console.log('Auth instance created:', authInstance);
           setIsConnected(authInstance.isSignedIn.get());
         }).catch((error: any) => {
           console.error('Google API init error:', error);
+          console.error('Error details:', JSON.stringify(error, null, 2));
         });
       });
     };
@@ -72,13 +75,21 @@ export default function CalendarSimple() {
   }, []);
   
   const handleConnect = async () => {
+    console.log('Connect button clicked');
     try {
+      console.log('Checking if gapi exists:', !!(window as any).gapi);
+      console.log('Checking if auth2 exists:', !!(window as any).gapi?.auth2);
+      
       const authInstance = (window as any).gapi.auth2.getAuthInstance();
+      console.log('Auth instance:', authInstance);
+      
       await authInstance.signIn();
+      console.log('Sign-in successful');
       setIsConnected(true);
       fetchEvents();
     } catch (error) {
       console.error('Sign-in error:', error);
+      alert('Failed to connect to Google Calendar. Check console for details.');
     }
   };
   
