@@ -2,6 +2,31 @@
 
 import { useState, useEffect } from "react";
 
+// Type declarations for Google API
+declare global {
+  interface Window {
+    gapi: {
+      load: (api: string, callback: () => void) => void;
+      client: {
+        init: (config: any) => Promise<any>;
+        calendar?: {
+          events: {
+            list: (params: any) => Promise<any>;
+          };
+        };
+      };
+      auth2: {
+        getAuthInstance: () => {
+          isSignedIn: {
+            get: () => boolean;
+          };
+          signIn: () => Promise<any>;
+        };
+      };
+    };
+  }
+}
+
 export default function CalendarSimple() {
   const [isConnected, setIsConnected] = useState(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -21,8 +46,8 @@ export default function CalendarSimple() {
     };
     
     const initGoogleAPI = () => {
-      window.gapi.load('client:auth2', () => {
-        window.gapi.client.init({
+      (window as any).gapi.load('client:auth2', () => {
+        (window as any).gapi.client.init({
           apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
           clientId: process.env.GOOGLE_CLIENT_ID,
           scope: 'https://www.googleapis.com/auth/calendar.readonly',
@@ -31,9 +56,12 @@ export default function CalendarSimple() {
           console.log('Google API initialized successfully');
           console.log('API Key present:', !!process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
           console.log('Client ID present:', !!process.env.GOOGLE_CLIENT_ID);
+          
           // Check if already signed in
-          const authInstance = window.gapi.auth2.getAuthInstance();
+          const authInstance = (window as any).gapi.auth2.getAuthInstance();
           setIsConnected(authInstance.isSignedIn.get());
+        }).catch((error: any) => {
+          console.error('Google API init error:', error);
         });
       });
     };
@@ -44,15 +72,19 @@ export default function CalendarSimple() {
   }, []);
   
   const handleConnect = async () => {
-    const authInstance = window.gapi.auth2.getAuthInstance();
-    await authInstance.signIn();
-    setIsConnected(true);
-    fetchEvents();
+    try {
+      const authInstance = (window as any).gapi.auth2.getAuthInstance();
+      await authInstance.signIn();
+      setIsConnected(true);
+      fetchEvents();
+    } catch (error) {
+      console.error('Sign-in error:', error);
+    }
   };
   
   const fetchEvents = async () => {
     try {
-      const response = await window.gapi.client.calendar.events.list({
+      const response = await (window as any).gapi.client.calendar.events.list({
         calendarId: 'primary',
         timeMin: new Date().toISOString(),
         maxResults: 10,
