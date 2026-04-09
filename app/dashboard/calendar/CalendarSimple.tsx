@@ -19,7 +19,7 @@ export default function CalendarSimple() {
       window.gapi.load('client:auth2', () => {
         window.gapi.client.init({
           apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-          clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          clientId: process.env.GOOGLE_CLIENT_ID,
           scope: 'https://www.googleapis.com/auth/calendar.readonly',
           discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
         }).then(() => {
