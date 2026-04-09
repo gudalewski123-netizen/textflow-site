@@ -33,9 +33,23 @@ export default function SettingsPage() {
         throw new Error("Please sign in to save settings");
       }
 
-      // In a real app, you would save to a user_settings table
-      // For now, we'll simulate a save
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Save to user_profiles table in Supabase
+      const { error } = await supabase
+        .from('user_profiles')
+        .upsert({
+          id: userData.user.id,
+          company_name: formData.companyName,
+          timezone: formData.timezone,
+          notifications_enabled: formData.notificationsEnabled,
+          email_updates: formData.emailUpdates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userData.user.id);
+
+      if (error) {
+        console.error("Failed to save settings:", error);
+        throw error;
+      }
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -45,6 +59,8 @@ export default function SettingsPage() {
       setIsSaving(false);
     }
   };
+
+
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -140,45 +156,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6">
-        <h2 className="text-xl font-semibold text-white mb-6">Integrations</h2>
-        
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border-white/30 rounded-lg">
-            <div className="flex items-center">
-              <div className="bg-blue-500/20 p-3 rounded-lg mr-4">
-                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M10 9.333l5.333 2.662-5.333 2.672V9.333zm14-4v14a4 4 0 01-4 4H4a4 4 0 01-4-4v-14a4 4 0 014-4h16a4 4 0 014 4z"/>
-                </svg>
-              </div>
-              <div>
-                <div className="font-medium text-white">Google Calendar</div>
-                <p className="text-sm text-gray-300">Sync your appointments and availability</p>
-              </div>
-            </div>
-            <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
-              Connect
-            </button>
-          </div>
 
-          <div className="flex items-center justify-between p-4 border-white/30 rounded-lg">
-            <div className="flex items-center">
-              <div className="bg-green-100 p-3 rounded-lg mr-4">
-                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <div>
-                <div className="font-medium text-white">Stripe</div>
-                <p className="text-sm text-gray-300">Manage billing and payments</p>
-              </div>
-            </div>
-            <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
-              Configure
-            </button>
-          </div>
-        </div>
-      </div>
 
       <div className="mt-8 flex justify-end">
         <button

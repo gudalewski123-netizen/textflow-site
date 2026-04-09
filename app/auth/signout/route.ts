@@ -10,3 +10,12 @@ export async function POST() {
   revalidatePath('/', 'layout');
   redirect('/auth/login');
 }
+
+export async function GET() {
+  const supabase = await createClient();
+  
+  await supabase.auth.signOut();
+  
+  revalidatePath('/', 'layout');
+  redirect('/auth/login');
+}

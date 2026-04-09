@@ -101,7 +101,7 @@ export default function SignUpPage() {
               email: formData.email,
               phone: formData.phone || null,
               created_at: new Date().toISOString(),
-              status: 'pending_payment'
+              status: 'active'
             }
           ]);
 
@@ -113,8 +113,7 @@ export default function SignUpPage() {
         // 3. Show success and redirect
         setSuccess(true);
         setTimeout(() => {
-          // In production, redirect to Stripe checkout
-          // For now, go to dashboard
+          // Redirect to dashboard after signup
           router.push('/dashboard');
         }, 2000);
       }
@@ -131,7 +130,7 @@ export default function SignUpPage() {
       <div className="max-w-lg w-full space-y-8 bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white">
-            Create Your <span className="text-blue-400">TextFlow AI</span> Account
+            Create Your <span className="text-cyan-400">TextFlow AI</span> Account
           </h2>
           <p className="mt-2 text-gray-300">
             Enterprise AI platform starting at $125/month

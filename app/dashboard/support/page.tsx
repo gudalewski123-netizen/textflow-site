@@ -1,193 +1,60 @@
 "use client";
 
-// Hydration fix: Remove dynamic content that differs between server/client
-
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-
-const ISSUE_TYPES = [
-  "Billing/Payment",
-  "Technical Issue",
-  "Feature Request",
-  "Account Access",
-  "Other",
-];
-
 export default function SupportPage() {
-  const [formData, setFormData] = useState({
-    subject: "",
-    issueType: "",
-    description: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const supabase = createClient();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        throw new Error("Please sign in to submit a ticket");
-      }
-
-      const { error: insertError } = await supabase
-        .from("support_tickets")
-        .insert({
-          user_id: userData.user.id,
-          email: userData.user.email,
-          subject: formData.subject,
-          issue_type: formData.issueType,
-          description: formData.description,
-          status: "open",
-          created_at: new Date().toISOString() // Client-only date is fine for hydration
-        });
-
-      if (insertError) throw insertError;
-
-      setSubmitted(true);
-      setFormData({ subject: "", issueType: "", description: "" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit ticket");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (submitted) {
-    return (
-      <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
-        <div className="text-center">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-            <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="mt-6 text-2xl font-bold text-white">Ticket Submitted</h2>
-          <p className="mt-2 text-white/80">
-            We've received your support request. Our team will respond within 24 hours at your registered email.
-          </p>
-          <button
-            onClick={() => setSubmitted(false)}
-            className="mt-6 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:bg-blue-700"
-          >
-            Submit Another Ticket
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Contact Support</h1>
-        <p className="text-white/80 mt-2">
-          Having issues with TextFlow? Submit a ticket and our team will help you resolve it.
-        </p>
-      </div>
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-bold text-white mb-4">Contact Support</h1>
+          <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            Having issues with TextFlow? Email us directly and our team will help you resolve it.
+          </p>
+        </div>
 
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700">{error}</p>
+        <div className="bg-gradient-to-br from-black/40 to-cyan-900/20 backdrop-blur-2xl border-2 border-cyan-500/30 rounded-3xl shadow-2xl p-12">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full shadow-lg">
+              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path fillRule="evenodd" d="M5.478 5.559A1.5 1.5 0 016.912 4.5H9A.75.75 0 009 3H6.912a3 3 0 00-2.868 2.118l-2.411 7.838a3 3 0 00-.133.882V18a3 3 0 003 3h15a3 3 0 003-3v-4.162c0-.299-.045-.596-.133-.882l-2.411-7.838A3 3 0 0017.088 3H15a.75.75 0 000 1.5h2.088a1.5 1.5 0 011.434 1.059l2.213 7.191H3.265l2.213-7.191z" clipRule="evenodd" />
+              </svg>
             </div>
-          )}
-
-          <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-              Subject *
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              required
-              value={formData.subject}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
-              placeholder="Brief description of your issue"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="issueType" className="block text-sm font-medium text-gray-700 mb-1">
-              Issue Type *
-            </label>
-            <select
-              id="issueType"
-              name="issueType"
-              required
-              value={formData.issueType}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
-            >
-              <option value="">Select an issue type</option>
-              {ISSUE_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              Description *
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              required
-              rows={6}
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
-              placeholder="Please provide detailed information about your issue, including any error messages or steps to reproduce."
-            />
-          </div>
-
-          <div className="pt-4 border-t border-gray-200">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Submitting..." : "Submit Support Ticket"}
-            </button>
-            <p className="text-xs text-gray-500 mt-3 text-center">
-              Typical response time: within 24 hours during business days.
+            
+            <h2 className="text-4xl font-bold text-white mb-6">Email Support</h2>
+            <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
+              For any technical issues, billing questions, or feature requests, email us directly.
+              We typically respond within 2 hours during business hours (9 AM - 5 PM EST, Mon-Fri).
             </p>
+            
+            <div className="bg-black/40 border-2 border-cyan-500 rounded-2xl p-8 mb-10">
+              <div className="text-cyan-400 text-5xl font-extrabold mb-4 tracking-tight">
+                admin@textflow.tech
+              </div>
+              <p className="text-gray-300 text-lg">
+                24/7 support for TextFlow AI platform
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <button 
+                onClick={() => window.location.href = 'mailto:admin@textflow.tech'}
+                className="w-full max-w-md mx-auto px-10 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-2xl font-bold rounded-xl hover:scale-105 transition-transform shadow-xl"
+              >
+                ✉️ Open Email Now
+              </button>
+              
+              <p className="text-gray-400 text-sm max-w-md mx-auto">
+                Clicking this button will open your default email client with our support address pre-filled.
+              </p>
+            </div>
           </div>
-        </form>
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
-          <div className="text-blue-600 font-medium mb-2">Email Support</div>
-          <p className="text-sm text-white/80">support@textflow.tech</p>
         </div>
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
-          <div className="text-blue-600 font-medium mb-2">Phone</div>
-          <p className="text-sm text-white/80">+1 (800) 555-0123 (9 AM - 5 PM EST)</p>
-        </div>
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 border p-5">
-          <div className="text-blue-600 font-medium mb-2">Documentation</div>
-          <p className="text-sm text-white/80">
-            <a href="/docs" className="text-blue-600 hover:underline">
-              Browse help articles →
-            </a>
+        
+        <div className="mt-16 text-center text-gray-500 text-sm">
+          <p>
+            🚀 We're committed to providing excellent support. For urgent matters, you can also contact us on Discord.
+          </p>
+          <p className="mt-2">
+            📞 Response time: Within 2 hours during business hours
           </p>
         </div>
       </div>

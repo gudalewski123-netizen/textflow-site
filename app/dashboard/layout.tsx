@@ -25,34 +25,21 @@ export default async function DashboardLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
-        <nav className="bg-white/10 backdrop-blur-lg border-b border-white/20 text-white px-6 py-4 shadow-2xl">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-bold text-white">TextFlow <span className="text-blue-400">AI</span></h1>
-              <div className="flex space-x-6">
-                <a href="/dashboard" className="text-gray-300 hover:text-blue-400 font-medium transition-colors">
-                  Overview
-                </a>
-                <a href="/dashboard/calendar" className="text-gray-300 hover:text-blue-400 font-medium transition-colors">
-                  Calendar
-                </a>
-                <a href="/dashboard/support" className="text-gray-300 hover:text-blue-400 font-medium transition-colors">
-                  Support
-                </a>
-                <a href="/dashboard/settings" className="text-gray-300 hover:text-blue-400 font-medium transition-colors">
-                  Settings
-                </a>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-blue-400">{data.user.email}</span>
-              <form action="/auth/signout" method="post">
-                <button className="text-sm text-gray-400 hover:text-blue-400 transition-colors">
-                  Sign out
-                </button>
-              </form>
-            </div>
+      <body className={`${inter.className} min-h-screen bg-[#050505] text-white`}>
+        <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+          <div className="text-2xl font-extrabold tracking-tighter">TEXT<span className="text-cyan-400">FLOW</span></div>
+          <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="/dashboard" className="hover:text-white transition">Overview</a>
+            <a href="/dashboard/messages" className="hover:text-white transition">Messages</a>
+            <a href="/dashboard/calendar" className="hover:text-white transition">Calendar</a>
+            <a href="/dashboard/support" className="hover:text-white transition">Support</a>
+            <a href="/dashboard/settings" className="hover:text-white transition">Settings</a>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-cyan-400">{data.user.email}</span>
+            <a href="/auth/signout" className="text-sm text-gray-400 hover:text-cyan-400 transition">
+              Sign out
+            </a>
           </div>
         </nav>
         <main className="max-w-7xl mx-auto py-8 px-4">{children}</main>

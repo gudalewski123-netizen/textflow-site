@@ -1,152 +1,163 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
 export default function DashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    messagesSent: 0,
+    responseRate: "0%",
+    balance: 0,
+  });
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push("/login");
+      } else {
+        setUser(user);
+        // In production, fetch real stats from API
+        setStats({
+          messagesSent: 1520,
+          responseRate: "14.3%",
+          balance: 2450.75,
+        });
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-700 text-xl">Loading dashboard...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8 text-white">
-      {/* Welcome */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 shadow-xl">
-        <h1 className="text-3xl font-bold">TextFlow Dashboard</h1>
-        <p className="text-blue-100 mt-2">AI-powered SMS & voice platform</p>
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <div className="glass rounded-3xl p-10 border border-cyan-500/30 bg-gradient-to-br from-cyan-500/5 to-purple-500/5">
+        <h1 className="text-4xl font-black text-white mb-4">Welcome back, {user.email?.split("@")[0]}</h1>
+        <p className="text-xl text-gray-400">
+          Your AI voice calling and SMS platform is running smoothly.
+        </p>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Balance & Quick Actions */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Account Balance */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-4">Account Balance</h2>
-            <div className="flex items-end justify-between mb-6">
-              <div>
-                <div className="text-4xl font-bold text-white">$2,450.75</div>
-                <div className="text-gray-300 mt-1">Twilio SMS credits available</div>
-              </div>
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                Add Credits
-              </button>
-            </div>
-            <div className="text-sm text-gray-300">
-              💰 SMS cost: $0.0105 per message • 33% margin on Twilio
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border rounded-xl p-5">
-                <div className="text-blue-600 font-bold mb-2">📱 Send SMS</div>
-                <p className="text-gray-400 text-sm mb-4">Send message to contacts</p>
-                <textarea className="w-full h-20 border rounded-lg p-3 text-sm mb-3" placeholder="Message..." />
-                <button className="w-full bg-blue-600 text-white py-2 rounded-lg">Send</button>
-              </div>
-              <div className="border rounded-xl p-5">
-                <div className="text-green-600 font-bold mb-2">📄 Upload CSV</div>
-                <p className="text-gray-400 text-sm mb-4">Import leads for campaigns</p>
-                <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center">
-                  <div className="text-gray-400 mb-2">Drop CSV file here</div>
-                  <button className="text-blue-600 text-sm">or click to browse</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Today's Activity */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-6">Today's Activity</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">1,520</div>
-                <div className="text-gray-300 text-sm">Messages Sent</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">217</div>
-                <div className="text-gray-300 text-sm">Responses</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">$15.96</div>
-                <div className="text-gray-300 text-sm">Cost</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">14.3%</div>
-                <div className="text-gray-300 text-sm">Response Rate</div>
-              </div>
-            </div>
-          </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass rounded-2xl p-6 border border-cyan-500/20 bg-cyan-500/5">
+          <div className="text-gray-400 text-sm font-bold uppercase tracking-widest">Messages Sent</div>
+          <div className="text-5xl font-black text-white mt-2">{stats.messagesSent.toLocaleString()}</div>
+          <div className="text-cyan-400 text-sm mt-1">+12% from last month</div>
         </div>
-
-        {/* Right Column - Calendar & Recent */}
-        <div className="space-y-8">
-          {/* Calendar Box */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-4">Upcoming Appointments</h2>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <div className="font-medium">Sales Call - John Smith</div>
-                  <div className="text-gray-300 text-sm">Today, 3:00 PM</div>
-                </div>
-                <div className="text-blue-600">📅</div>
-              </div>
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <div className="font-medium">Follow-up - Sarah Johnson</div>
-                  <div className="text-gray-300 text-sm">Tomorrow, 11:00 AM</div>
-                </div>
-                <div className="text-blue-600">📅</div>
-              </div>
-              <button className="w-full border-2 border-dashed border-gray-600 rounded-lg p-3 text-gray-300 hover:border-blue-300">
-                + Add meeting (AI will create most)
-              </button>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-4">Recent Activity</h2>
-            <div className="space-y-3">
-              <div className="text-sm">
-                <div className="font-medium">CSV uploaded - 450 leads</div>
-                <div className="text-gray-300">10 minutes ago</div>
-              </div>
-              <div className="text-sm">
-                <div className="font-medium">SMS campaign started</div>
-                <div className="text-gray-300">45 minutes ago</div>
-              </div>
-              <div className="text-sm">
-                <div className="font-medium">Payment processed</div>
-                <div className="text-gray-300">2 hours ago</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Text Message Inbox */}
-          <div className="bg-gray-800 border-gray-700 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-white mb-4">Recent Messages</h2>
-            <div className="space-y-3">
-              <div className="border rounded-lg p-3">
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium">+1 (555) 012-3456</span>
-                  <span className="text-gray-300 text-sm">2:14 PM</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">Yes, I'm interested in the spring sale!</p>
-                <input className="w-full border rounded px-3 py-1 text-sm" placeholder="Reply..." />
-              </div>
-              <div className="border rounded-lg p-3">
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium">+1 (555) 987-6543</span>
-                  <span className="text-gray-300 text-sm">1:30 PM</span>
-                </div>
-                <p className="text-gray-300 text-sm">What time is the appointment?</p>
-              </div>
-            </div>
-          </div>
+        <div className="glass rounded-2xl p-6 border border-purple-500/20 bg-purple-500/5">
+          <div className="text-gray-400 text-sm font-bold uppercase tracking-widest">Response Rate</div>
+          <div className="text-5xl font-black text-white mt-2">{stats.responseRate}</div>
+          <div className="text-purple-400 text-sm mt-1">Industry average: 8%</div>
+        </div>
+        <div className="glass rounded-2xl p-6 border border-green-500/20 bg-green-500/5">
+          <div className="text-gray-400 text-sm font-bold uppercase tracking-widest">Account Balance</div>
+          <div className="text-5xl font-black text-white mt-2">${stats.balance.toLocaleString()}</div>
+          <div className="text-green-400 text-sm mt-1">SMS credits available</div>
         </div>
       </div>
 
-      {/* Footer Note */}
-      <div className="text-center text-gray-300 text-sm pt-4 border-t">
-        TextFlow AI • $125/month platform • $0.0105/SMS • $50 setup fee
+      {/* Action Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="glass rounded-2xl p-6 border border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10">
+          <div className="text-cyan-400 font-bold text-lg mb-3">Start Campaign</div>
+          <p className="text-gray-400 text-sm mb-4">Launch a new SMS or voice campaign</p>
+          <button className="w-full bg-cyan-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition">
+            Create
+          </button>
+        </div>
+        <div className="glass rounded-2xl p-6 border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
+          <div className="text-purple-400 font-bold text-lg mb-3">View Analytics</div>
+          <p className="text-gray-400 text-sm mb-4">Campaign performance and insights</p>
+          <button className="w-full bg-purple-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition">
+            Analyze
+          </button>
+        </div>
+        <div className="glass rounded-2xl p-6 border border-green-500/20 bg-gradient-to-br from-green-500/5 to-green-500/10">
+          <div className="text-green-400 font-bold text-lg mb-3">Calendar</div>
+          <p className="text-gray-400 text-sm mb-4">Manage appointments and schedule</p>
+          <button 
+            onClick={() => router.push("/dashboard/calendar")}
+            className="w-full bg-green-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition"
+          >
+            Open
+          </button>
+        </div>
+        <div className="glass rounded-2xl p-6 border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-amber-500/10">
+          <div className="text-amber-400 font-bold text-lg mb-3">Support</div>
+          <p className="text-gray-400 text-sm mb-4">Get help or submit a ticket</p>
+          <button 
+            onClick={() => router.push("/dashboard/support")}
+            className="w-full bg-amber-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition"
+          >
+            Contact
+          </button>
+        </div>
+      </div>
+
+      {/* Recent Activity Table */}
+      <div className="glass rounded-2xl border border-white/20 overflow-hidden">
+        <div className="p-6 border-b border-white/10">
+          <h2 className="text-2xl font-black text-white">Recent Activity</h2>
+          <p className="text-gray-400 text-sm mt-1">Last 24 hours of platform usage</p>
+        </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between py-3 border-b border-gray-50">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="text-blue-600 text-sm">📱</div>
+                </div>
+                <div>
+                  <div className="font-medium">SMS Campaign "Spring Sale"</div>
+                  <div className="text-gray-500 text-sm">Sent to 320 recipients</div>
+                </div>
+              </div>
+              <div className="text-gray-500 text-sm">2 hours ago</div>
+            </div>
+            <div className="flex items-center justify-between py-3 border-b border-gray-50">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="text-green-600 text-sm">📞</div>
+                </div>
+                <div>
+                  <div className="font-medium">Voice Call Campaign</div>
+                  <div className="text-gray-500 text-sm">42 calls completed</div>
+                </div>
+              </div>
+              <div className="text-gray-500 text-sm">5 hours ago</div>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="text-purple-600 text-sm">💰</div>
+                </div>
+                <div>
+                  <div className="font-medium">Payment Processed</div>
+                  <div className="text-gray-500 text-sm">Payment processed successfully</div>
+                </div>
+              </div>
+              <div className="text-gray-500 text-sm">Yesterday</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
