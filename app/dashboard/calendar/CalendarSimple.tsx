@@ -8,6 +8,11 @@ export default function CalendarSimple() {
   
   // Load Google API
   useEffect(() => {
+    console.log('Environment check:', {
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY ? 'Present' : 'Missing',
+      clientId: process.env.GOOGLE_CLIENT_ID ? 'Present' : 'Missing'
+    });
+    
     const loadGoogleAPI = () => {
       const script = document.createElement('script');
       script.src = 'https://apis.google.com/js/api.js';
@@ -23,6 +28,9 @@ export default function CalendarSimple() {
           scope: 'https://www.googleapis.com/auth/calendar.readonly',
           discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
         }).then(() => {
+          console.log('Google API initialized successfully');
+          console.log('API Key present:', !!process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
+          console.log('Client ID present:', !!process.env.GOOGLE_CLIENT_ID);
           // Check if already signed in
           const authInstance = window.gapi.auth2.getAuthInstance();
           setIsConnected(authInstance.isSignedIn.get());
