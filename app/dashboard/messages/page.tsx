@@ -145,7 +145,7 @@ export default function MessagesPage() {
       </div>
 
       {/* Stats footer */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl p-4">
           <div className="text-sm text-gray-400">Active Conversations</div>
           <div className="text-2xl font-bold text-white">12</div>
@@ -161,6 +161,54 @@ export default function MessagesPage() {
         <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl p-4">
           <div className="text-sm text-gray-400">Campaigns Active</div>
           <div className="text-2xl font-bold text-white">3</div>
+        </div>
+        <div className="bg-gradient-to-r from-green-900/20 to-green-600/20 backdrop-blur-lg border border-green-500/30 rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm text-gray-300">Twilio Credits</div>
+              <div className="text-2xl font-bold text-white">$245.75</div>
+            </div>
+            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+              Add Funds
+            </button>
+          </div>
+          <div className="mt-2 text-xs text-green-400">• Enough for ~4,915 SMS</div>
+          <div className="mt-1 text-xs text-gray-400">• Enough for ~1,230 voice minutes</div>
+        </div>
+      </div>
+      
+      {/* Twilio Account Section */}
+      <div className="mt-6 glass rounded-2xl border border-cyan-500/20 p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-white">Twilio Account</h3>
+            <p className="text-gray-400 text-sm">Manage your SMS/voice integration</p>
+          </div>
+          <div className="space-x-3">
+            <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-medium">
+              Purchase Number
+            </button>
+            <button className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-medium border border-white/30">
+              View Billing
+            </button>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-gray-400">Account SID</div>
+            <div className="text-white font-mono text-sm truncate">AC1234567890abcdef... (Click to copy)</div>
+          </div>
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-gray-400">Phone Numbers</div>
+            <div className="text-white font-bold text-lg">2 Numbers</div>
+            <div className="text-gray-400 text-sm mt-1">+1 (555) 123-4567 • +1 (555) 987-6543</div>
+          </div>
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-gray-400">SMS Sent Today</div>
+            <div className="text-white font-bold text-lg">152 SMS</div>
+            <div className="text-gray-400 text-sm mt-1">Cost: ~$0.45 today</div>
+          </div>
         </div>
       </div>
     </div>
