@@ -92,18 +92,23 @@ export default function CalendarGIS() {
   };
   
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Calendar</h1>
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">Calendar</h1>
+        <p className="text-gray-400 mt-2">Your schedule at a glance</p>
+      </div>
       
       {!isConnected ? (
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 text-center border border-gray-700">
-          <p className="text-lg mb-4">Connect your Google Calendar to see your schedule</p>
-          <button
-            onClick={handleConnect}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
-          >
-            Connect Google Calendar
-          </button>
+        <div className="flex justify-center">
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 text-center border border-gray-700 max-w-md">
+            <p className="text-lg mb-4">Connect your Google Calendar to see your schedule</p>
+            <button
+              onClick={handleConnect}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
+            >
+              Connect Google Calendar
+            </button>
+          </div>
         </div>
       ) : (
         <div>
