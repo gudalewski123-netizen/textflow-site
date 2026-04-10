@@ -57,18 +57,19 @@ export default function CalendarGIS() {
   
   const fetchEvents = async (accessToken: string) => {
     try {
+      const params = new URLSearchParams({
+        timeMin: new Date().toISOString(),
+        maxResults: '10',
+        singleEvents: 'true',
+        orderBy: 'startTime'
+      });
+      
       const response = await fetch(
-        'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-          },
-          params: new URLSearchParams({
-            timeMin: new Date().toISOString(),
-            maxResults: '10',
-            singleEvents: 'true',
-            orderBy: 'startTime'
-          })
+          }
         }
       );
       
