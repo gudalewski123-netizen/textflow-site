@@ -112,30 +112,34 @@ export default function CalendarGIS() {
         </div>
       ) : (
         <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold">Your Events</h2>
-            <div className="space-x-3">
-              <button
-                onClick={refreshEvents}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
-              >
-                Refresh Events
-              </button>
-              <button
-                onClick={() => {
-                  setToken(null);
-                  setIsConnected(false);
-                  setEvents([]);
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-              >
-                Disconnect
-              </button>
-            </div>
+          <div className="flex justify-center space-x-4 mb-8">
+            <button
+              onClick={refreshEvents}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium flex items-center space-x-2"
+            >
+              <span>🔄</span>
+              <span>Refresh Events</span>
+            </button>
+            <button
+              onClick={() => {
+                setToken(null);
+                setIsConnected(false);
+                setEvents([]);
+              }}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center space-x-2"
+            >
+              <span>🔓</span>
+              <span>Disconnect</span>
+            </button>
+          </div>
+          
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Your Events</h2>
+            <p className="text-gray-400 mt-2">Upcoming schedule</p>
           </div>
           
           {events.length === 0 ? (
-            <div className="bg-white/5 rounded-lg p-8 text-center">
+            <div className="bg-white/5 rounded-lg p-8 text-center border border-gray-700/50">
               <p className="text-gray-400">No upcoming events found</p>
               <button
                 onClick={refreshEvents}
@@ -145,20 +149,40 @@ export default function CalendarGIS() {
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
               {events.map((event, index) => (
-                <div key={index} className="bg-white/5 rounded-lg p-4 border border-gray-700">
-                  <h3 className="font-medium">{event.summary || 'No Title'}</h3>
-                  <p className="text-sm text-gray-400">
-                    {event.start?.dateTime ? (
-                      new Date(event.start.dateTime).toLocaleString()
-                    ) : (
-                      event.start?.date || 'No date'
-                    )}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {event.description?.substring(0, 100) || ''}
-                  </p>
+                <div 
+                  key={index} 
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-xl p-5 border border-gray-700/50 shadow-lg hover:border-gray-600 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                      <span className="text-blue-400 font-bold">
+                        {event.start?.dateTime ? new Date(event.start.dateTime).getDate() : '📅'}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg">{event.summary || 'No Title'}</h3>
+                      <p className="text-sm text-gray-400 mt-1">
+                        📅 {event.start?.dateTime ? (
+                          new Date(event.start.dateTime).toLocaleString([], {
+                            weekday: 'short', 
+                            month: 'short', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        ) : (
+                          event.start?.date || 'No date'
+                        )}
+                      </p>
+                      {event.description && (
+                        <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                          {event.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

@@ -86,7 +86,10 @@ export default function DashboardPage() {
         <div className="glass rounded-2xl p-6 border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
           <div className="text-purple-400 font-bold text-lg mb-3">View Analytics</div>
           <p className="text-gray-400 text-sm mb-4">Campaign performance and insights</p>
-          <button className="w-full bg-purple-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition">
+          <button 
+            onClick={() => router.push("/dashboard/analytics")}
+            className="w-full bg-purple-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition"
+          >
             Analyze
           </button>
         </div>
