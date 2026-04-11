@@ -31,7 +31,9 @@ export default async function DashboardLayout({
           <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">
             <a href="/dashboard" className="hover:text-white transition">Overview</a>
             <a href="/dashboard/messages" className="hover:text-white transition">Messages</a>
+            <a href="/dashboard/studio" className="hover:text-white transition">AI Studio</a>
             <a href="/dashboard/calendar" className="hover:text-white transition">Calendar</a>
+            <a href="/dashboard/integrations" className="hover:text-white transition">Integrations</a>
             <a href="/dashboard/support" className="hover:text-white transition">Support</a>
             <a href="/dashboard/settings" className="hover:text-white transition">Settings</a>
           </div>

@@ -5,6 +5,16 @@ export const twilioConfig = {
   messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID || '',
 };
 
+export const twilioConnectConfig = {
+  clientId: process.env.TWILIO_CONNECT_CLIENT_ID || '',
+  clientSecret: process.env.TWILIO_CONNECT_CLIENT_SECRET || '',
+  redirectUri: process.env.TWILIO_CONNECT_REDIRECT_URI || 'http://localhost:3000/api/twilio/connect/callback',
+};
+
 export function isTwilioConfigured() {
   return twilioConfig.accountSid && twilioConfig.authToken;
+}
+
+export function isTwilioConnectConfigured() {
+  return twilioConnectConfig.clientId && twilioConnectConfig.clientSecret && twilioConnectConfig.redirectUri;
 }

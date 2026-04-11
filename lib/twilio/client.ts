@@ -1,4 +1,4 @@
-'use server';
+
 
 import { twilioConfig, isTwilioConfigured } from './config';
 
@@ -40,13 +40,17 @@ class TwilioClient {
     if (this.initialized) return;
 
     try {
-      const twilio = await import('twilio');
-      this.client = twilio.default(twilioConfig.accountSid, twilioConfig.authToken);
+      // Dynamic import to avoid build-time errors
+      const twilioModule = await import('twilio');
+      // Handle both default and named exports
+      const twilioClient = twilioModule.default || twilioModule;
+      this.client = twilioClient(twilioConfig.accountSid, twilioConfig.authToken);
       this.initialized = true;
       console.log('Twilio client initialized');
     } catch (error) {
       console.error('Failed to initialize Twilio client:', error);
-      throw error;
+      // Don't throw - allow mock mode to work
+      this.initialized = false;
     }
   }
 
