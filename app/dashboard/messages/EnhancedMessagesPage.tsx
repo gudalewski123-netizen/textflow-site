@@ -113,7 +113,7 @@ export default function EnhancedMessagesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           areaCode,
-          userId
+          clientId: userId
         })
       });
       
