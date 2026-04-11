@@ -21,7 +21,7 @@ export const TEXTFLOW_PRODUCTS = {
     { id: 'credits_100', name: '$100 Credits', amount: 10000, smsCount: 9524 },
     { id: 'credits_250', name: '$250 Credits', amount: 25000, smsCount: 23810 }
   ],
-  SMS_PRICE: 0.0105 // $0.0105 per SMS
+  SMS_PRICE: 0.0189 // $0.0189 per SMS (Twilio cost ~$0.0075 = 60% margin)
 } as const;
 
 // Create Stripe customer for a user

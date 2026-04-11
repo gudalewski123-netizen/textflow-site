@@ -13,7 +13,7 @@ export default function CreditBalance({ balance }: CreditBalanceProps) {
   };
 
   const calculateSMSCount = (amount: number) => {
-    const smsPrice = 0.0105;
+    const smsPrice = 0.0189;
     return Math.floor(amount / smsPrice);
   };
 
@@ -43,22 +43,30 @@ export default function CreditBalance({ balance }: CreditBalanceProps) {
 
       {/* SMS Pricing */}
       <div className="text-center text-sm text-gray-400">
-        <p>SMS rate: $0.0105 per message</p>
-        <p className="mt-1">No setup fees • No monthly limits</p>
+        <p>SMS rate: $0.0189 per message</p>
+        <p className="mt-1">No setup fees • No monthly limits • 60% margin</p>
       </div>
 
       {/* Quick Top-up Options */}
-      <div className="grid grid-cols-3 gap-2 text-center">
-        {[50, 100, 250].map((amount) => (
+      <div className="grid grid-cols-2 gap-2 text-center">
+        {[20, 30, 40, 50].map((amount) => (
           <button
             key={amount}
             onClick={() => window.location.href = `/dashboard/billing?amount=${amount}`}
-            className="py-2 bg-white/10 text-white text-sm rounded hover:bg-white/20 transition-all duration-200"
+            className="py-2 bg-gradient-to-r from-blue-700/30 to-purple-700/30 text-white text-sm rounded-lg hover:from-blue-600/40 hover:to-purple-600/40 transition-all duration-200 font-medium"
           >
             +${amount}
           </button>
         ))}
       </div>
+      
+      {/* Custom Amount */}
+      <button
+        onClick={() => window.location.href = '/dashboard/billing?custom=true'}
+        className="w-full py-2 bg-white/5 text-white text-sm rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/10"
+      >
+        Custom Amount
+      </button>
     </div>
   );
 }

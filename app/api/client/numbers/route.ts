@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { twilioConfig, isTwilioConfigured } from '@/lib/twilio/config';
 
-export async function POST(request: NextRequest) {
+// GET: List client's phone numbers
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'userId parameter is required' },
+        { status: 400 }
+      );
+    }
+
     const supabase = createSupabaseServerClient();
     
     if (!supabase) {
@@ -13,36 +23,61 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check Twilio configuration
-    if (!isTwilioConfigured()) {
+    // Get client's phone numbers
+    const { data: numbers, error } = await supabase
+      .from('client_phone_numbers')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching client numbers:', error);
       return NextResponse.json(
-        { error: 'Twilio is not configured' },
+        { error: 'Database error' },
         { status: 500 }
       );
     }
 
-    const body = await request.json();
+    return NextResponse.json({
+      success: true,
+      data: numbers || []
+    });
+
+  } catch (error: any) {
+    console.error('Unexpected error in client numbers:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST: Purchase a new phone number for client
+export async function POST(request: NextRequest) {
+  try {
+    const { userId, areaCode } = await request.json();
     
-    // Validate required fields
-    if (!body.clientId) {
+    if (!userId || !areaCode) {
       return NextResponse.json(
-        { error: 'clientId is required' },
-        { status: 400 }
-      );
-    }
-    
-    if (!body.areaCode) {
-      return NextResponse.json(
-        { error: 'areaCode is required' },
+        { error: 'userId and areaCode are required' },
         { status: 400 }
       );
     }
 
-    // Check if client exists and has sufficient balance
+    const supabase = createSupabaseServerClient();
+    
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+
+    // Check client exists
     const { data: client, error: clientError } = await supabase
       .from('client_accounts')
-      .select('id, balance, phone_number')
-      .eq('id', body.clientId)
+      .select('id, balance')
+      .eq('user_id', userId)
       .single();
 
     if (clientError || !client) {
@@ -52,92 +87,79 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if client already has a phone number
-    if (client.phone_number) {
+    // Check if client has enough balance for number purchase ($1/month)
+    if (client.balance < 1.00) {
       return NextResponse.json(
-        { error: 'Client already has a phone number' },
+        { error: 'Insufficient balance. Minimum $1.00 required for phone number purchase.' },
         { status: 400 }
       );
     }
 
-    // Phone number cost: $2.00 (your marked-up price)
-    const numberCost = 2.00;
+    // TODO: Integrate with Twilio API to purchase number
+    // For now, simulate purchase
+    const mockPhoneNumber = `+1${areaCode}555${Math.floor(1000 + Math.random() * 9000)}`;
     
-    if (client.balance < numberCost) {
-      return NextResponse.json(
-        { error: 'Insufficient balance for phone number purchase' },
-        { status: 400 }
-      );
-    }
-
-    // In a real implementation, you would:
-    // 1. Purchase phone number from Twilio
-    // 2. Create Twilio sub-account for client
-    // 3. Assign number to sub-account
-    
-    // For now, we'll simulate the purchase
-    const mockPhoneNumber = `+1${body.areaCode}5551234`;
-    
-    // Deduct cost from balance
-    const newBalance = Number(client.balance) - numberCost;
+    // Deduct $1 from balance for phone number
+    const newBalance = client.balance - 1.00;
     
     const { error: updateError } = await supabase
       .from('client_accounts')
       .update({ 
         balance: newBalance,
-        phone_number: mockPhoneNumber,
         updated_at: new Date().toISOString()
       })
-      .eq('id', body.clientId);
+      .eq('id', client.id);
 
     if (updateError) {
-      console.error('Error updating client account:', updateError);
+      console.error('Error updating balance:', updateError);
       return NextResponse.json(
-        { error: 'Failed to purchase phone number' },
+        { error: 'Failed to deduct balance' },
         { status: 500 }
       );
     }
 
-    // Record phone number purchase
-    const { error: numberError } = await supabase
+    // Add phone number to client
+    const { data: newNumber, error: numberError } = await supabase
       .from('client_phone_numbers')
       .insert([{
-        client_id: body.clientId,
+        user_id: userId,
         phone_number: mockPhoneNumber,
-        twilio_sid: `PN${Date.now()}`,
-        area_code: body.areaCode,
-        capabilities: body.capabilities || { sms: true, voice: false },
-        monthly_cost: 1.00, // Your cost from Twilio
-        status: 'active'
-      }]);
+        area_code: areaCode,
+        status: 'active',
+        monthly_cost: 1.00,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
 
     if (numberError) {
-      console.error('Error recording phone number:', numberError);
+      console.error('Error adding phone number:', numberError);
+      return NextResponse.json(
+        { error: 'Failed to add phone number' },
+        { status: 500 }
+      );
     }
 
     // Record transaction
-    const { error: transactionError } = await supabase
+    await supabase
       .from('client_transactions')
       .insert([{
-        client_id: body.clientId,
-        type: 'number_fee',
-        amount: -numberCost,
+        client_id: client.id,
+        type: 'phone_number_purchase',
+        amount: 1.00,
         description: `Phone number purchase: ${mockPhoneNumber}`,
         status: 'completed'
       }]);
-
-    if (transactionError) {
-      console.error('Error recording transaction:', transactionError);
-    }
 
     return NextResponse.json({
       success: true,
       message: 'Phone number purchased successfully',
       data: {
         phoneNumber: mockPhoneNumber,
-        areaCode: body.areaCode,
-        cost: numberCost,
-        newBalance: newBalance
+        areaCode,
+        monthlyCost: 1.00,
+        newBalance
       }
     });
 

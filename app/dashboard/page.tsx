@@ -76,6 +76,18 @@ export default function DashboardPage() {
 
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Get Phone Number Card */}
+        <div className="glass rounded-2xl p-6 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
+          <div className="text-blue-400 font-bold text-lg mb-3">Get Phone Number</div>
+          <p className="text-gray-400 text-sm mb-4">Buy a dedicated Twilio phone number</p>
+          <button 
+            onClick={() => router.push("/dashboard/numbers")}
+            className="w-full bg-blue-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition"
+          >
+            Get Your Number
+          </button>
+        </div>
+        
         <div className="glass rounded-2xl p-6 border border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10">
           <div className="text-cyan-400 font-bold text-lg mb-3">Start Campaign</div>
           <p className="text-gray-400 text-sm mb-4">Launch a new SMS or voice campaign</p>
@@ -83,6 +95,7 @@ export default function DashboardPage() {
             Create
           </button>
         </div>
+        
         <div className="glass rounded-2xl p-6 border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
           <div className="text-purple-400 font-bold text-lg mb-3">View Analytics</div>
           <p className="text-gray-400 text-sm mb-4">Campaign performance and insights</p>
@@ -93,16 +106,7 @@ export default function DashboardPage() {
             Analyze
           </button>
         </div>
-        <div className="glass rounded-2xl p-6 border border-green-500/20 bg-gradient-to-br from-green-500/5 to-green-500/10">
-          <div className="text-green-400 font-bold text-lg mb-3">Calendar</div>
-          <p className="text-gray-400 text-sm mb-4">Manage appointments and schedule</p>
-          <button 
-            onClick={() => router.push("/dashboard/calendar")}
-            className="w-full bg-green-500 text-black py-3 rounded-xl font-bold hover:scale-105 transition"
-          >
-            Open
-          </button>
-        </div>
+        
         <div className="glass rounded-2xl p-6 border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-amber-500/10">
           <div className="text-amber-400 font-bold text-lg mb-3">Support</div>
           <p className="text-gray-400 text-sm mb-4">Get help or submit a ticket</p>
