@@ -42,6 +42,9 @@ export default function EnhancedMessagesPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [areaCode, setAreaCode] = useState('');
+  const [purchasing, setPurchasing] = useState(false);
 
   // Mock data
   const [conversations, setConversations] = useState<Conversation[]>([
@@ -96,6 +99,48 @@ export default function EnhancedMessagesPage() {
       }
     } catch (error) {
       console.error("Failed to check AI status:", error);
+    }
+  };
+  
+  const purchaseNumber = async () => {
+    if (!areaCode || areaCode.length !== 3) return;
+    
+    setPurchasing(true);
+    
+    try {
+      const response = await fetch('/api/client/numbers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          areaCode,
+          userId
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        // Success! Update local state
+        setPhoneNumber(data.data.phoneNumber);
+        setShowPurchaseModal(false);
+        // Refresh balance
+        if (userId) {
+          const res = await fetch(`/api/client/account?userId=${userId}`);
+          if (res.ok) {
+            const accountData = await res.json();
+            if (accountData.success && accountData.data) {
+              setBalance(accountData.data.balance || 0);
+            }
+          }
+        }
+      } else {
+        alert(data.message || 'Failed to purchase number');
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      alert('Failed to purchase number');
+    } finally {
+      setPurchasing(false);
     }
   };
 
@@ -453,10 +498,7 @@ export default function EnhancedMessagesPage() {
                   </>
                 ) : (
                   <button
-                    onClick={() => {
-                      // Navigate to phone number purchase
-                      window.location.href = '/dashboard/studio?tab=numbers';
-                    }}
+                    onClick={() => setShowPurchaseModal(true)}
                     className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
                   >
                     Get Phone Number
@@ -537,6 +579,61 @@ export default function EnhancedMessagesPage() {
           </div>
         </div>
       </div>
+
+      {/* Purchase Phone Number Modal */}
+      {showPurchaseModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-white/20 rounded-2xl p-6 w-full max-w-md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">Purchase Phone Number</h3>
+              <button
+                onClick={() => setShowPurchaseModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                <div className="text-yellow-400 text-sm font-bold">$2.00 one-time fee</div>
+                <div className="text-gray-400 text-xs mt-1">Includes your first month</div>
+              </div>
+              
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Area Code</label>
+                <input
+                  type="text"
+                  value={areaCode}
+                  onChange={(e) => setAreaCode(e.target.value.replace(/\D/g, '').slice(0, 3))}
+                  placeholder="e.g., 415"
+                  className="w-full px-4 py-2 bg-black/30 border border-white/20 rounded-lg text-white placeholder-gray-400"
+                />
+                <div className="text-xs text-gray-400 mt-1">3-digit area code</div>
+              </div>
+              
+              <div className="bg-black/20 p-3 rounded-lg">
+                <div className="text-sm text-gray-400">Your number will be:</div>
+                <div className="text-white font-bold">
+                  +1{areaCode || 'XXX'}XXXXXXX
+                </div>
+              </div>
+              
+              <button
+                onClick={purchaseNumber}
+                disabled={!areaCode || areaCode.length !== 3 || purchasing}
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-3 rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {purchasing ? 'Purchasing...' : 'Purchase Number - $2.00'}
+              </button>
+              
+              <div className="text-xs text-gray-400 text-center">
+                You'll be charged $2.00 now and $2.00/month ongoing
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
