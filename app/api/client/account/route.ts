@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         .insert([{
           id: userId,
           balance: 0,
-          status: 'active',
+          billing_status: 'active',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }])
