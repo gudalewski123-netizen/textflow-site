@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const { data: numbers, error } = await supabase
       .from('client_phone_numbers')
       .select('*')
-      .eq('user_id', userId)
+      .eq('client_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     const { data: client, error: clientError } = await supabase
       .from('client_accounts')
       .select('id, balance')
-      .eq('user_id', userId)
+      .eq('id', userId)
       .single();
 
     if (clientError || !client) {
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     const { data: newNumber, error: numberError } = await supabase
       .from('client_phone_numbers')
       .insert([{
-        user_id: userId,
+        client_id: client.id,
         phone_number: mockPhoneNumber,
         area_code: areaCode,
         status: 'active',

@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     const { data: client, error: clientError } = await supabase
       .from('client_accounts')
       .select('*')
-      .eq('user_id', userId)
+      .eq('id', userId)
       .single();
 
     if (clientError && clientError.code !== 'PGRST116') { // PGRST116 = no rows found
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       const { data: newClient, error: createError } = await supabase
         .from('client_accounts')
         .insert([{
-          user_id: userId,
+          id: userId,
           balance: 0,
           status: 'active',
           created_at: new Date().toISOString(),
