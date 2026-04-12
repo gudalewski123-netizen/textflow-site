@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 
 // GET: List client's phone numbers
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createClient();
     
     if (!supabase) {
       return NextResponse.json(
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createClient();
     
     if (!supabase) {
       return NextResponse.json(
