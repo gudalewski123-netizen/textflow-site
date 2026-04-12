@@ -25,12 +25,29 @@ export default function DashboardPage() {
         router.push("/login");
       } else {
         setUser(user);
-        // In production, fetch real stats from API
-        setStats({
-          messagesSent: 1520,
-          responseRate: "14.3%",
-          balance: 2450.75,
-        });
+        
+        // Fetch real stats from API
+        try {
+          const res = await fetch(`/api/client/account?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.data) {
+              setStats({
+                messagesSent: data.data.sms_usage_count || 0,
+                responseRate: data.data.response_rate || "0%",
+                balance: data.data.balance || 0,
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch account data:', error);
+          // Fallback to mock data if API fails
+          setStats({
+            messagesSent: 0,
+            responseRate: "0%",
+            balance: 0,
+          });
+        }
         setLoading(false);
       }
     };
@@ -71,6 +88,12 @@ export default function DashboardPage() {
           <div className="text-gray-400 text-sm font-bold uppercase tracking-widest">Account Balance</div>
           <div className="text-5xl font-black text-white mt-2">${stats.balance.toLocaleString()}</div>
           <div className="text-green-400 text-sm mt-1">SMS credits available</div>
+          <button 
+            onClick={() => router.push('/dashboard/billing')}
+            className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200 font-semibold text-sm"
+          >
+            Deposit Funds
+          </button>
         </div>
       </div>
 
