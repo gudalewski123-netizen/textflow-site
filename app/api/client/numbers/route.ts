@@ -5,11 +5,11 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    const userId = searchParams.get('userId') || searchParams.get('clientId');
     
     if (!userId) {
       return NextResponse.json(
-        { error: 'userId parameter is required' },
+        { error: 'userId or clientId parameter is required' },
         { status: 400 }
       );
     }
@@ -55,11 +55,13 @@ export async function GET(request: NextRequest) {
 // POST: Purchase a new phone number for client
 export async function POST(request: NextRequest) {
   try {
-    const { userId, areaCode } = await request.json();
+    const { userId, clientId, areaCode } = await request.json();
     
-    if (!userId || !areaCode) {
+    const targetUserId = userId || clientId;
+    
+    if (!targetUserId || !areaCode) {
       return NextResponse.json(
-        { error: 'userId and areaCode are required' },
+        { error: 'userId/clientId and areaCode are required' },
         { status: 400 }
       );
     }
@@ -77,7 +79,7 @@ export async function POST(request: NextRequest) {
     const { data: client, error: clientError } = await supabase
       .from('client_accounts')
       .select('id, balance')
-      .eq('id', userId)
+      .eq('id', targetUserId)
       .single();
 
     if (clientError || !client) {
@@ -122,7 +124,7 @@ export async function POST(request: NextRequest) {
     const { data: newNumber, error: numberError } = await supabase
       .from('client_phone_numbers')
       .insert([{
-        client_id: client.id,
+        client_id: targetUserId,
         phone_number: mockPhoneNumber,
         area_code: areaCode,
         status: 'active',
