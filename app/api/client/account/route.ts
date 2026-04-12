@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    const userId = searchParams.get('userId') || searchParams.get('clientId');
     
     if (!userId) {
       return NextResponse.json(
-        { error: 'userId parameter is required' },
+        { error: 'userId or clientId parameter is required' },
         { status: 400 }
       );
     }
